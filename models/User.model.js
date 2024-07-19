@@ -7,6 +7,7 @@ const userSchema = new Schema(
       type: String,
       required: [true, "Username is required."],
       trim: true,
+      unique: [true, "Username already exists"],
     },
     email: {
       type: String,
@@ -18,6 +19,7 @@ const userSchema = new Schema(
     },
     trustpoints: {
       type: Number,
+      default: 0,
     },
   },
   {
