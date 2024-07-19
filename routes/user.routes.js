@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const User = require("../models/User");
+const User = require("../models/User.model.js");
 
 // Create a new user
-router.post("/users", async (req, res) => {
+router.post("/", async (req, res) => {
   try {
     const user = await User.create(req.body);
     res.status(201).json(user);
@@ -13,7 +13,7 @@ router.post("/users", async (req, res) => {
 });
 
 // Get all users
-router.get("/users", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const users = await User.find();
     res.json(users);

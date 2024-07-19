@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const Item = require("../models/Item");
+const Item = require("../models/Item.model.js");
 
 // Create a new item
-router.post("/items", async (req, res) => {
+router.post("/", async (req, res) => {
   try {
     const item = await Item.create(req.body);
     const populatedItem = await Item.findById(item._id).populate(
@@ -17,7 +17,7 @@ router.post("/items", async (req, res) => {
 });
 
 // Get all items
-router.get("/items", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const items = await Item.find().populate("owner", "username");
   } catch (error) {
