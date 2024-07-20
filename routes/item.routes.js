@@ -26,7 +26,7 @@ router.get("/", async (req, res) => {
 });
 
 // Get a single item by ID
-router.get("/items/:id", async (req, res) => {
+router.get("/:id", async (req, res) => {
   try {
     const item = await Item.findById(req.params.id).populate(
       "owner",
