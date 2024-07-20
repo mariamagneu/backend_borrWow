@@ -20,6 +20,7 @@ router.post("/", async (req, res) => {
 router.get("/", async (req, res) => {
   try {
     const items = await Item.find().populate("owner", "username");
+    res.json(items);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
