@@ -50,6 +50,19 @@ router.put("/:id", async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 });
+router.delete("/:id", async (req, res) => {
+  try {
+    const deletedUser = await User.findByIdAndDelete(req.params.id);
+
+    if (!deletedUser) {
+      return res.status(404).json({ message: "No User with this ID" });
+    }
+
+    res.json({ message: "User deleted successfully" });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
 // Add more routes as needed
 
 module.exports = router;
