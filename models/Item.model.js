@@ -31,11 +31,9 @@ const itemSchema = new Schema(
       //maybe enum to have only a selected area to be able to choose from?
     },
     owner: {
-      owner: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
-      },
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
   },
   {
