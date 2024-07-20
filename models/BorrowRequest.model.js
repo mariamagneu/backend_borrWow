@@ -1,4 +1,4 @@
-const { Schema, model } = require("mongoose");
+const { mongoose, Schema, model } = require("mongoose");
 
 // TODO: Please make sure you edit the Book model to whatever makes sense in this case
 const borrowRequestSchema = new Schema(
