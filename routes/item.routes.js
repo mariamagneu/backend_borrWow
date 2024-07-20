@@ -16,6 +16,24 @@ router.post("/", async (req, res) => {
   }
 });
 
+// Edit an item
+
+router.put("/:id", async (req, res) => {
+  try {
+    const updatedItem = await Item.findByIdAndUpdate(req.params.id, req.body, {
+      new: true, // Return the updated document
+      runValidators: true, // Run schema validations
+    }).populate("owner", "username");
+
+    if (!updatedItem) {
+      return res.status(404).json({ message: "No Item with this ID" });
+    }
+
+    res.json(updatedItem);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
 // Get all items
 router.get("/", async (req, res) => {
   try {
