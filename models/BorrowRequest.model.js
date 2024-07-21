@@ -23,7 +23,6 @@ const borrowRequestSchema = new Schema(
     owner: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
     },
     status: {
       type: String,
