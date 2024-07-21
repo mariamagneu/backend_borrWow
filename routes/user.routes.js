@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/User.model.js");
 
-// Create a new user
+/* // Create a new user is now in auth 
 router.post("/", async (req, res) => {
   try {
     const user = await User.create(req.body);
@@ -10,7 +10,7 @@ router.post("/", async (req, res) => {
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
-});
+}); */
 
 // Get all users
 router.get("/", async (req, res) => {
