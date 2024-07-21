@@ -1,9 +1,9 @@
+const express = require("express");
+const router = express.Router();
 const User = require("../models/User.model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { isAuthenticated } = require("../middlewares/auth.middleware");
-
-const router = require("express").Router();
 
 // All routes start with /auth
 
