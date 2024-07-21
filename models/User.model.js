@@ -1,4 +1,6 @@
 const { Schema, model } = require("mongoose");
+/* const bcrypt = require("bcryptjs");
+const saltRounds = 10; */
 
 // TODO: Please make sure you edit the Book model to whatever makes sense in this case
 const userSchema = new Schema(
@@ -32,5 +34,13 @@ const userSchema = new Schema(
 );
 
 const User = model("User", userSchema);
+
+/* // hash user password before saving into database
+
+
+userSchema.pre("save", function (next) {
+  this.password = bcrypt.hashSync(this.password, saltRounds);
+  next();
+}); */
 
 module.exports = User;

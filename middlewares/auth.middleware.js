@@ -1,18 +1,32 @@
 const jwt = require("jsonwebtoken");
 
 const isAuthenticated = (req, res, next) => {
-  try {
-    const token = req.headers.authorization.split(" ")[1]; // get the token from headers "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Njk4Y2Q3ZDFjNDc3YjMwNzE2OGM0YTMiLCJpYXQiOjE3MjEyOTMxNjB9.0u-Xwq483aEjrj9D2RUsDUZuqMTsOWFKeP_KZRW93Uw"
-    const payload = jwt.verify(token, process.env.TOKEN_SECRET); // decode token and get payload
+  console.log("TOKEN_SECRET:", process.env.TOKEN_SECRET); // Debug log
 
-    req.tokenPayload = payload; // to pass the decoded payload to the next route
+  try {
+    // Check if Authorization header is provided
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+      return res.status(401).json({ message: "Authorization header missing" });
+    }
+
+    // Extract the token from Authorization header
+    const token = authHeader.split(" ")[1]; // "Bearer <token>"
+    if (!token) {
+      return res.status(401).json({ message: "Token not provided" });
+    }
+
+    // Verify the token and decode payload
+    const payload = jwt.verify(token, process.env.TOKEN_SECRET);
+
+    // Attach payload to request object
+    req.tokenPayload = payload;
+
+    // Proceed to next middleware or route handler
     next();
   } catch (error) {
-    // the middleware will catch error and send 401 if:
-    // 1. There is no token
-    // 2. Token is invalid
-    // 3. There is no headers or authorization in req (no token)
-    res.status(401).json("token not provided or not valid");
+    // Handle errors related to token
+    res.status(401).json({ message: "Token not provided or not valid" });
   }
 };
 
