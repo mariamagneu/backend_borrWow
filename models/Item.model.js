@@ -35,6 +35,10 @@ const itemSchema = new Schema(
       ref: "User",
       required: true,
     },
+    availability: {
+      type: "String",
+      enum: ["Available", "Not Available", "Hidden"],
+    },
   },
   {
     // this second object adds extra properties: `createdAt` and `updatedAt`
