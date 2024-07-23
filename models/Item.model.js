@@ -45,3 +45,5 @@ const itemSchema = new Schema(
 const Item = model("Item", itemSchema);
 
 module.exports = Item;
+
+//the previous commit message was for the frontend
