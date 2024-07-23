@@ -34,7 +34,7 @@ router.put("/:itemId", isAuthenticated, async (req, res, next) => {
     const updatedItem = await Item.findByIdAndUpdate(itemId, req.body, {
       new: true, // Return the updated document
       runValidators: true, // Run schema validations
-    }).populate("owner", "username");
+    }).populate("owner", "username email");
 
     if (!updatedItem) {
       return next(new Error("Item not found"));
