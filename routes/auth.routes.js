@@ -4,6 +4,7 @@ const User = require("../models/User.model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { isAuthenticated } = require("../middlewares/auth.middleware");
+const secret = require("../config/secretGenerator");
 
 // All routes start with /auth
 
