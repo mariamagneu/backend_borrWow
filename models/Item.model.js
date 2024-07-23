@@ -27,7 +27,7 @@ const itemSchema = new Schema(
     },
 
     location: {
-      type: "String",
+      type: String,
       //maybe enum to have only a selected area to be able to choose from?
     },
     owner: {
@@ -36,7 +36,7 @@ const itemSchema = new Schema(
       required: true,
     },
     availability: {
-      type: "String",
+      type: String,
       enum: ["Available", "Not Available", "Hidden"],
     },
   },

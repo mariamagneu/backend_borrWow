@@ -17,7 +17,7 @@ const isAuthenticated = (req, res, next) => {
     }
 
     // Verify the token and decode payload
-    const payload = jwt.verify(token, process.env.TOKEN_SECRET);
+    const payload = jwt.verify(token, secret);
 
     // Attach payload to request object
     req.tokenPayload = payload;

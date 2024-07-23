@@ -35,14 +35,10 @@ router.post("/login", async (req, res, next) => {
       // User does exists with this username
       if (bcrypt.compareSync(password, potentialUser.passwordHash)) {
         // User has correct credentials
-        const token = jwt.sign(
-          { userId: potentialUser._id },
-          process.env.TOKEN_SECRET,
-          {
-            algorithm: "HS256",
-            expiresIn: "6h",
-          }
-        );
+        const token = jwt.sign({ userId: potentialUser._id }, secret, {
+          algorithm: "HS256",
+          expiresIn: "6h",
+        });
         res.json({ token });
       } else {
         res.status(403).json({ message: "Incorrect password" });
