@@ -27,9 +27,9 @@ router.put("/:itemId", isAuthenticated, async (req, res, next) => {
 
   try {
     const updatedItem = await Item.findByIdAndUpdate(itemId, req.body, {
-      new: true,
-      runValidators: true,
-    }).populate("owner", "username");
+      new: true, // Return the updated document
+      runValidators: true, // Run schema validations
+    }).populate("owner", "username email"); // Include email field from main branch
 
     if (!updatedItem) {
       return next(new Error("Item not found"));
@@ -41,10 +41,13 @@ router.put("/:itemId", isAuthenticated, async (req, res, next) => {
   }
 });
 
+
 // Get all items
 router.get("/", async (req, res, next) => {
   try {
-    const items = await Item.find().populate("owner", "username");
+    const items = await Item.find()
+      .populate("owner", "username")
+      .sort({ createdAt: -1 });
     res.json(items);
   } catch (error) {
     next(error);

@@ -38,6 +38,36 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Fetch items owned by the logged-in user and requested by others
+router.get("/incomingrequest", isAuthenticated, async (req, res) => {
+  try {
+    const userId = req.tokenPayload.userId;
+
+    const requests = await BorrowRequest.find({ owner: userId })
+      .populate("item")
+      .populate("borrower");
+
+    res.json(requests);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Fetch items the logged-in user has requested to borrow from others
+router.get("/requested", isAuthenticated, async (req, res) => {
+  try {
+    const userId = req.tokenPayload.userId;
+
+    const borrowedItems = await BorrowRequest.find({ borrower: userId })
+      .populate("item")
+      .populate("owner");
+
+    res.json(borrowedItems);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
 // Edit a borrow request (authenticated and authorized)
 router.put("/:id", isAuthenticated, async (req, res) => {
   try {
@@ -54,11 +84,9 @@ router.put("/:id", isAuthenticated, async (req, res) => {
     }
 
     if (!borrowRequest.borrower.equals(req.tokenPayload.userId)) {
-      return res
-        .status(403)
-        .json({
-          message: "You are not authorized to edit this borrow request",
-        });
+      return res.status(403).json({
+        message: "You are not authorized to edit this borrow request",
+      });
     }
 
     const updatedRequest = await BorrowRequest.findByIdAndUpdate(id, req.body, {
@@ -91,11 +119,9 @@ router.delete("/:id", isAuthenticated, async (req, res) => {
     }
 
     if (!borrowRequest.borrower.equals(req.tokenPayload.userId)) {
-      return res
-        .status(403)
-        .json({
-          message: "You are not authorized to delete this borrow request",
-        });
+      return res.status(403).json({
+        message: "You are not authorized to delete this borrow request",
+      });
     }
 
     await BorrowRequest.findByIdAndDelete(id);
