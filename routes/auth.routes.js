@@ -27,20 +27,21 @@ router.post("/signup", async (req, res, next) => {
     next(error);
   }
 });
+
 // POST Login
 router.post("/login", async (req, res, next) => {
   const { username, password } = req.body;
   try {
     const potentialUser = await User.findOne({ username });
     if (potentialUser) {
-      // User does exists with this username
+      // User does exist with this username
       if (bcrypt.compareSync(password, potentialUser.passwordHash)) {
         // User has correct credentials
         const token = jwt.sign({ userId: potentialUser._id }, secret, {
           algorithm: "HS256",
           expiresIn: "6h",
         });
-        res.json({ token });
+        res.json({ token }); // Only return the token
       } else {
         res.status(403).json({ message: "Incorrect password" });
       }
@@ -51,10 +52,23 @@ router.post("/login", async (req, res, next) => {
     next(error);
   }
 });
-// GET Verify
 
-router.get("/verify", isAuthenticated, (req, res, next) => {
-  res.json({ message: "Token valid" });
+// GET Verify
+router.get("/verify", isAuthenticated, async (req, res, next) => {
+  try {
+    const user = await User.findById(req.payload.userId); // Fetch user information from the database
+    if (user) {
+      res.json({
+        userId: user._id,
+        username: user.username,
+        email: user.email,
+      });
+    } else {
+      res.status(404).json({ message: "User not found" });
+    }
+  } catch (error) {
+    next(error);
+  }
 });
 
 module.exports = router;
