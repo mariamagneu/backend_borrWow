@@ -1,11 +1,9 @@
 const express = require("express");
-const { default: mongoose } = require("mongoose");
+const mongoose = require("mongoose");
 const { isAuthenticated } = require("../middlewares/auth.middleware");
-
-const router = express.Router();
 const Item = require("../models/Item.model.js");
 
-//all these routes start with api/items
+const router = express.Router();
 
 // Create a new item
 router.post("/", isAuthenticated, async (req, res, next) => {
@@ -14,7 +12,6 @@ router.post("/", isAuthenticated, async (req, res, next) => {
       ...req.body,
       owner: req.tokenPayload.userId,
     });
-
     res.status(201).json(newItem);
   } catch (error) {
     next(error);
@@ -22,10 +19,8 @@ router.post("/", isAuthenticated, async (req, res, next) => {
 });
 
 // Edit an item
-
 router.put("/:itemId", isAuthenticated, async (req, res, next) => {
   const { itemId } = req.params;
-
   if (!mongoose.Types.ObjectId.isValid(itemId)) {
     return next(new Error("Invalid ID"));
   }
@@ -34,7 +29,7 @@ router.put("/:itemId", isAuthenticated, async (req, res, next) => {
     const updatedItem = await Item.findByIdAndUpdate(itemId, req.body, {
       new: true, // Return the updated document
       runValidators: true, // Run schema validations
-    }).populate("owner", "username email");
+    }).populate("owner", "username email"); // Include email field from main branch
 
     if (!updatedItem) {
       return next(new Error("Item not found"));
@@ -45,8 +40,10 @@ router.put("/:itemId", isAuthenticated, async (req, res, next) => {
     next(error);
   }
 });
+
+
 // Get all items
-router.get("/", async (req, res) => {
+router.get("/", async (req, res, next) => {
   try {
     const items = await Item.find()
       .populate("owner", "username")
@@ -63,6 +60,7 @@ router.get("/:id", async (req, res, next) => {
   if (!mongoose.isValidObjectId(id)) {
     return next(new Error("Invalid ID"));
   }
+
   try {
     const item = await Item.findById(id).populate("owner", "username");
     if (!item) {
@@ -74,11 +72,9 @@ router.get("/:id", async (req, res, next) => {
   }
 });
 
-//delete Item
-
+// Delete an item
 router.delete("/:id", isAuthenticated, async (req, res, next) => {
   const { id } = req.params;
-
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return next(new Error("Invalid ID"));
   }
@@ -89,7 +85,6 @@ router.delete("/:id", isAuthenticated, async (req, res, next) => {
       return next(new Error("Item not found"));
     }
     if (itemToDelete.owner.equals(req.tokenPayload.userId)) {
-      // Ensure the user owns the item
       await Item.findByIdAndDelete(id);
       res.status(204).send();
     } else {
