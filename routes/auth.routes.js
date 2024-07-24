@@ -8,6 +8,7 @@ const secret = require("../config/secretGenerator");
 
 // All routes start with /auth
 
+// Health Check Route
 router.get("/", (req, res) => {
   res.json("All good in auth");
 });
@@ -23,19 +24,21 @@ router.post("/signup", async (req, res, next) => {
   } catch (error) {
     if (error.code === 11000) {
       console.log("duplicate");
+      res.status(400).json({ message: "Duplicate username" });
+    } else {
+      next(error);
     }
-    next(error);
   }
 });
+
 // POST Login
 router.post("/login", async (req, res, next) => {
   const { username, password } = req.body;
+
   try {
     const potentialUser = await User.findOne({ username });
     if (potentialUser) {
-      // User does exists with this username
       if (bcrypt.compareSync(password, potentialUser.passwordHash)) {
-        // User has correct credentials
         const token = jwt.sign({ userId: potentialUser._id }, secret, {
           algorithm: "HS256",
           expiresIn: "6h",
@@ -51,8 +54,8 @@ router.post("/login", async (req, res, next) => {
     next(error);
   }
 });
-// GET Verify
 
+// GET Verify
 router.get("/verify", isAuthenticated, (req, res, next) => {
   res.json({ message: "Token valid" });
 });
