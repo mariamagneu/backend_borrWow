@@ -48,7 +48,9 @@ router.put("/:itemId", isAuthenticated, async (req, res, next) => {
 // Get all items
 router.get("/", async (req, res) => {
   try {
-    const items = await Item.find().populate("owner", "username");
+    const items = await Item.find()
+      .populate("owner", "username")
+      .sort({ createdAt: -1 });
     res.json(items);
   } catch (error) {
     next(error);
