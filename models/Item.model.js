@@ -27,13 +27,17 @@ const itemSchema = new Schema(
     },
 
     location: {
-      type: "String",
+      type: String,
       //maybe enum to have only a selected area to be able to choose from?
     },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
+    },
+    availability: {
+      type: String,
+      enum: ["Available", "Not Available", "Hidden"],
     },
   },
   {

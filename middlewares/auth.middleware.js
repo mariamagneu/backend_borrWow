@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const secret = require("../config/secretGenerator.js");
 
 const isAuthenticated = (req, res, next) => {
   console.log("TOKEN_SECRET:", process.env.TOKEN_SECRET); // Debug log
@@ -17,7 +18,7 @@ const isAuthenticated = (req, res, next) => {
     }
 
     // Verify the token and decode payload
-    const payload = jwt.verify(token, process.env.TOKEN_SECRET);
+    const payload = jwt.verify(token, secret);
 
     // Attach payload to request object
     req.tokenPayload = payload;
