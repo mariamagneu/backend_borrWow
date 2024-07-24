@@ -13,6 +13,10 @@ const borrowRequestSchema = new Schema(
       ref: "User",
       required: true,
     },
+    owner: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
 
     requestDate: { type: Date, default: Date.now },
 
@@ -20,10 +24,7 @@ const borrowRequestSchema = new Schema(
       type: "String",
       //maybe enum to have only a selected area to be able to choose from?
     },
-    owner: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
+
     status: {
       type: String,
       enum: ["pending", "accepted", "rejected", "completed"],
