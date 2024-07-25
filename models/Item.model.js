@@ -1,16 +1,16 @@
-const { mongoose, Schema, model } = require("mongoose");
+const mongoose = require("mongoose");
+const { Schema, model } = mongoose;
 
-// TODO: Please make sure you edit the Book model to whatever makes sense in this case
 const itemSchema = new Schema(
   {
     itemname: {
       type: String,
-      required: [true, "itemname is required."],
+      required: [true, "Item name is required."],
       trim: true,
     },
     description: {
       type: String,
-      required: [true, "description is required."],
+      required: [true, "Description is required."],
     },
     category: {
       type: String,
@@ -20,28 +20,29 @@ const itemSchema = new Schema(
         "music",
         "tools",
         "clothes",
-        "rooms",
+        "rooms & facilities",
         "outdoor area",
+        "acts of service",
       ],
-      required: [true, "category is required."],
+      required: [true, "Category is required."],
     },
-
     location: {
       type: String,
-      //maybe enum to have only a selected area to be able to choose from?
     },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      required: [true, "Owner is required."],
     },
     availability: {
       type: String,
       enum: ["Available", "Not Available", "Hidden"],
     },
+    image: {
+      type: String,
+    },
   },
   {
-    // this second object adds extra properties: `createdAt` and `updatedAt`
     timestamps: true,
   }
 );
