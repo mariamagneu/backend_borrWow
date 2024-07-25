@@ -43,7 +43,7 @@ router.post("/login", async (req, res, next) => {
           algorithm: "HS256",
           expiresIn: "6h",
         });
-        res.json({ token });
+        res.json({ token }); // Only return the token
       } else {
         res.status(403).json({ message: "Incorrect password" });
       }
