@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const { Schema, model } = mongoose;
-
 const itemSchema = new Schema(
   {
     itemname: {
@@ -15,14 +14,14 @@ const itemSchema = new Schema(
     category: {
       type: String,
       enum: [
-        "electronics",
-        "beauty",
-        "music",
-        "tools",
-        "clothes",
-        "rooms & facilities",
-        "outdoor area",
-        "acts of service",
+        "Electronics",
+        "Beauty",
+        "Music",
+        "Tools",
+        "Clothes",
+        "Rooms & Facilities",
+        "Outdoor Area",
+        "Acts of Service",
       ],
       required: [true, "Category is required."],
     },
@@ -46,9 +45,5 @@ const itemSchema = new Schema(
     timestamps: true,
   }
 );
-
 const Item = model("Item", itemSchema);
-
 module.exports = Item;
-
-//the previous commit message was for the frontend
