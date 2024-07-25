@@ -18,9 +18,14 @@ const borrowRequestSchema = new Schema(
     },
     requestDate: { type: Date, default: Date.now },
     pickupDate: { type: Date, required: true },
-    giveBackDate: { type: Date, required: true },
-    location: {
+    returnDate: { type: Date, required: true },
+    pickupLocation: {
       type: String,
+      required: true,
+    },
+    returnLocation: {
+      type: String,
+      required: true,
     },
     status: {
       type: String,
@@ -32,7 +37,6 @@ const borrowRequestSchema = new Schema(
     timestamps: true,
   }
 );
-
 const BorrowRequest = model("BorrowRequest", borrowRequestSchema);
 
 module.exports = BorrowRequest;
