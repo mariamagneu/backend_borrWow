@@ -16,7 +16,6 @@ const borrowRequestSchema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
-    requestDate: { type: Date, default: Date.now },
     pickupDate: { type: Date, required: true },
     returnDate: { type: Date, required: true },
     pickupLocation: {
