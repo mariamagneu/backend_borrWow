@@ -1,22 +1,18 @@
-module.exports = app => {
-  app.use((req, res) => {
-    // this middleware runs whenever requested page is not available
-    res.status(404).json({
-      message:
-        'This route does not exist, you should probably look at your URL or what your backend is expecting',
-    })
-  })
+const path = require("path");
 
-  app.use((err, req, res) => {
-    // whenever you call next(err), this middleware will handle the error
-    // always logs the error
-    console.error('ERROR', req.method, req.path, err)
-
-    // only render if the error ocurred before sending the response
-    if (!res.headersSent) {
-      res.status(500).json({
-        message: 'Internal server error. Check the server console',
-      })
+module.exports = (app) => {
+  // Catch 404 and forward to error handler
+  app.use((req, res, next) => {
+    if (req.accepts('html')) {
+      res.status(404).sendFile(path.join(__dirname, 'build', 'index.html'));
+    } else {
+      res.status(404).json({ error: 'Not Found' });
     }
-  })
-}
+  });
+
+  // Error handler
+  app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(err.status || 500).json({ error: err.message });
+  });
+};
