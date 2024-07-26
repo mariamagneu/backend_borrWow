@@ -54,10 +54,8 @@ router.post("/login", async (req, res, next) => {
     next(error);
   }
 });
-
-// GET Verify
-router.get("/verify", isAuthenticated, (req, res, next) => {
-  res.json({ message: "Token valid" });
+//Get verify
+router.get("/verify", isAuthenticated, (req, res) => {
+  res.json({ userId: req.user.userId, message: "Token valid" });
 });
-
 module.exports = router;

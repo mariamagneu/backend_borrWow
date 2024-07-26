@@ -1,26 +1,20 @@
 const jwt = require("jsonwebtoken");
 const secret = require("../config/secretGenerator.js");
 const isAuthenticated = (req, res, next) => {
-  try {
-    // Check if Authorization header is provided
-    const authHeader = req.headers.authorization;
-    if (!authHeader) {
-      return res.status(401).json({ message: "Authorization header missing" });
-    }
-    // Extract the token from Authorization header
-    const token = authHeader.split(" ")[1]; // "Bearer <token>"
-    if (!token) {
-      return res.status(401).json({ message: "Token not provided" });
-    }
-    // Verify the token and decode payload
-    const payload = jwt.verify(token, secret);
-    // Attach payload to request object
-    req.tokenPayload = payload;
-    // Proceed to next middleware or route handler
-    next();
-  } catch (error) {
-    // Handle errors related to token
-    res.status(401).json({ message: "Token not provided or not valid" });
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
+    return res.status(401).json({ message: "No token provided" });
   }
+
+  const token = authHeader.split(" ")[1];
+  jwt.verify(token, secret, (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ message: "Invalid token" });
+    }
+
+    req.user = decoded; // Attach the decoded user info to the request object
+    next();
+  });
 };
+
 module.exports = { isAuthenticated };
