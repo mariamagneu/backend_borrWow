@@ -55,6 +55,17 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+router.get("/user/items", isAuthenticated, async (req, res, next) => {
+  try {
+    const items = await Item.find({ owner: req.tokenPayload.userId })
+      .populate("owner", "username") // Optionally populate owner data
+      .sort({ createdAt: -1 });
+    res.json(items);
+  } catch (error) {
+    next(error);
+  }
+});
+
 // Get a single item by ID
 router.get("/:id", async (req, res, next) => {
   const { id } = req.params;
