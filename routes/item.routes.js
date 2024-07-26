@@ -12,7 +12,9 @@ const errorHandler = (err, req, res, next) => {
 };
 
 // Create a new item
-router.post('/', isAuthenticated, async (req, res, next) => {
+router.post("/", isAuthenticated, async (req, res, next) => {
+  console.log("Request Body:", req.body); // Log the request body to debug
+
   try {
     const newItem = await Item.create({
       ...req.body,
@@ -54,6 +56,17 @@ router.get('/', async (req, res, next) => {
   try {
     const items = await Item.find()
       .populate('owner', 'username')
+      .sort({ createdAt: -1 });
+    res.json(items);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get("/user/items", isAuthenticated, async (req, res, next) => {
+  try {
+    const items = await Item.find({ owner: req.tokenPayload.userId })
+      .populate("owner", "username") // Optionally populate owner data
       .sort({ createdAt: -1 });
     res.json(items);
   } catch (error) {

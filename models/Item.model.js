@@ -15,19 +15,20 @@ const itemSchema = new Schema(
     category: {
       type: String,
       enum: [
-        "electronics",
-        "beauty",
-        "music",
-        "tools",
-        "clothes",
-        "rooms & facilities",
-        "outdoor area",
-        "acts of service",
+        "Electronics",
+        "Beauty",
+        "Music",
+        "Tools",
+        "Clothes",
+        "Rooms & Facilities",
+        "Outdoor Area",
+        "Acts of Service",
+        "Vehicles",
       ],
       required: [true, "Category is required."],
     },
     location: {
-      type: String,
+      type: String, // Added location field
     },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
@@ -38,8 +39,8 @@ const itemSchema = new Schema(
       type: String,
       enum: ["Available", "Not Available", "Hidden"],
     },
-    image: {
-      type: String,
+    imageUrl: {
+      type: String, // Added imageUrl field
     },
   },
   {
@@ -48,7 +49,4 @@ const itemSchema = new Schema(
 );
 
 const Item = model("Item", itemSchema);
-
 module.exports = Item;
-
-//the previous commit message was for the frontend

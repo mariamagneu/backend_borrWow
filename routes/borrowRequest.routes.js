@@ -68,6 +68,37 @@ router.get("/requested", isAuthenticated, async (req, res) => {
   }
 });
 
+router.get("/:id", isAuthenticated, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid ID" });
+    }
+
+    const borrowRequest = await BorrowRequest.findById(id);
+
+    if (!borrowRequest) {
+      return res.status(404).json({ message: "Borrow request not found" });
+    }
+
+    if (!borrowRequest.borrower.equals(req.tokenPayload.userId)) {
+      return res.status(403).json({
+        message: "You are not authorized to view this borrow request",
+      });
+    }
+
+    const populatedBorrowRequest = await BorrowRequest.findById(id)
+      .populate("owner")
+      .populate("borrower")
+      .populate("item");
+
+    res.json(populatedBorrowRequest);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
 // Edit a borrow request (authenticated and authorized)
 router.put("/:id", isAuthenticated, async (req, res) => {
   try {

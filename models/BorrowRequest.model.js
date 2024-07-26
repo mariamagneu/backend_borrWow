@@ -1,6 +1,5 @@
 const { mongoose, Schema, model } = require("mongoose");
 
-// TODO: Please make sure you edit the Book model to whatever makes sense in this case
 const borrowRequestSchema = new Schema(
   {
     item: {
@@ -17,14 +16,16 @@ const borrowRequestSchema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
-
-    requestDate: { type: Date, default: Date.now },
-
-    location: {
-      type: "String",
-      //maybe enum to have only a selected area to be able to choose from?
+    pickupDate: { type: Date, required: true },
+    returnDate: { type: Date, required: true },
+    pickupLocation: {
+      type: String,
+      required: true,
     },
-
+    returnLocation: {
+      type: String,
+      required: true,
+    },
     status: {
       type: String,
       enum: ["pending", "accepted", "rejected", "completed"],
@@ -32,11 +33,9 @@ const borrowRequestSchema = new Schema(
     },
   },
   {
-    // this second object adds extra properties: `createdAt` and `updatedAt`
     timestamps: true,
   }
 );
-
 const BorrowRequest = model("BorrowRequest", borrowRequestSchema);
 
 module.exports = BorrowRequest;
