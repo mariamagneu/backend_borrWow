@@ -7,6 +7,8 @@ const router = express.Router();
 
 // Create a new item
 router.post("/", isAuthenticated, async (req, res, next) => {
+  console.log("Request Body:", req.body); // Log the request body to debug
+
   try {
     const newItem = await Item.create({
       ...req.body,
@@ -40,7 +42,6 @@ router.put("/:itemId", isAuthenticated, async (req, res, next) => {
     next(error);
   }
 });
-
 
 // Get all items
 router.get("/", async (req, res, next) => {
