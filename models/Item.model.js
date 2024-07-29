@@ -40,7 +40,7 @@ const itemSchema = new Schema(
       enum: ["Available", "Not Available", "Hidden"],
     },
     imageUrl: {
-      type: String, // Added imageUrl field
+      type: String,
     },
   },
   {
