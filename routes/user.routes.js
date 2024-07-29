@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/User.model.js");
+const { isAuthenticated } = require("../middlewares/auth.middleware");
 
 /* // Create a new user is now in auth 
 router.post("/", async (req, res) => {
@@ -33,10 +34,19 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// Edit user by ID
-router.put("/:id", async (req, res) => {
+// Edit user by ID (authenticated route)
+router.put("/:id", isAuthenticated, async (req, res) => {
   try {
-    const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
+    const { id } = req.params;
+    // Ensure that the user can only edit their own profile
+    if (id !== req.tokenPayload.userId) {
+      return res.status(403).json({ message: "Unauthorized" });
+    }
+
+    const updatedProfile = { ...req.body };
+    delete updatedProfile.passwordHash;
+
+    const updatedUser = await User.findByIdAndUpdate(id, updatedProfile, {
       new: true,
       runValidators: true,
     });
@@ -50,9 +60,17 @@ router.put("/:id", async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 });
-router.delete("/:id", async (req, res) => {
+
+// Delete user by ID (authenticated route)
+router.delete("/:id", isAuthenticated, async (req, res) => {
   try {
-    const deletedUser = await User.findByIdAndDelete(req.params.id);
+    const { id } = req.params;
+    // Ensure that the user can only delete their own profile
+    if (id !== req.tokenPayload.userId) {
+      return res.status(403).json({ message: "Unauthorized" });
+    }
+
+    const deletedUser = await User.findByIdAndDelete(id);
 
     if (!deletedUser) {
       return res.status(404).json({ message: "No User with this ID" });
@@ -63,6 +81,5 @@ router.delete("/:id", async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 });
-// Add more routes as needed
 
 module.exports = router;

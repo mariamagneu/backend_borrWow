@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const Item = require("../models/Item.model");
 
 const router = express.Router();
 const { isAuthenticated } = require("../middlewares/auth.middleware");
@@ -9,16 +10,26 @@ const BorrowRequest = require("../models/BorrowRequest.model");
 // Create a new borrow request (authenticated)
 router.post("/", isAuthenticated, async (req, res) => {
   try {
+    const { itemId, pickupDate, returnDate, pickupLocation, returnLocation } =
+      req.body;
+    const userId = req.tokenPayload.userId;
+
+    const item = await Item.findById(itemId);
+
+    if (!item) {
+      return res.status(404).json({ error: "Item not found" });
+    }
+
     const borrowRequest = await BorrowRequest.create({
-      ...req.body,
-      borrower: req.tokenPayload.userId,
+      item: itemId,
+      borrower: userId,
+      owner: item.owner,
+      pickupDate,
+      returnDate,
+      pickupLocation,
+      returnLocation,
     });
-
-    const populatedBorrowRequest = await BorrowRequest.findById(
-      borrowRequest._id
-    ).populate("owner", "borrower", "item");
-
-    res.status(201).json(populatedBorrowRequest);
+    res.status(201).json(borrowRequest);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
