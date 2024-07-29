@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const { Schema, model } = mongoose;
+
 const itemSchema = new Schema(
   {
     itemname: {
@@ -22,11 +23,12 @@ const itemSchema = new Schema(
         "Rooms & Facilities",
         "Outdoor Area",
         "Acts of Service",
+        "Vehicles",
       ],
       required: [true, "Category is required."],
     },
     location: {
-      type: String,
+      type: String, // Added location field
     },
     owner: {
       type: mongoose.Schema.Types.ObjectId,
@@ -37,13 +39,14 @@ const itemSchema = new Schema(
       type: String,
       enum: ["Available", "Not Available", "Hidden"],
     },
-    image: {
-      type: String,
+    imageUrl: {
+      type: String, // Added imageUrl field
     },
   },
   {
     timestamps: true,
   }
 );
+
 const Item = model("Item", itemSchema);
 module.exports = Item;
