@@ -54,6 +54,33 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+// Update the search route
+router.get('/search', async (req, res, next) => {
+  const { query, category, location } = req.query;
+
+  // Build the search query object
+  const searchQuery = {};
+
+  if (query) {
+    searchQuery.itemname = { $regex: query, $options: 'i' };
+  }
+  if (category) {
+    searchQuery.category = { $regex: category, $options: 'i' };
+  }
+  if (location) {
+    searchQuery.location = { $regex: location, $options: 'i' };
+  }
+
+  try {
+    console.log(`Received search query: ${query}, category: ${category}, location: ${location}`);
+    
+    const items = await Item.find(searchQuery).populate('owner', 'username');
+    res.json(items);
+  } catch (error) {
+    next(error);
+  }
+});
+
 // Get a single item by ID
 router.get("/:id", async (req, res, next) => {
   const { id } = req.params;
