@@ -38,7 +38,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Fetch items owned by the logged-in user and requested by others
+// Fetch items owned by the logged-in user and requested by others REQUESTED TO (INCOMING)
 router.get("/incomingrequest", isAuthenticated, async (req, res) => {
   try {
     const userId = req.tokenPayload.userId;
@@ -53,7 +53,7 @@ router.get("/incomingrequest", isAuthenticated, async (req, res) => {
   }
 });
 
-// Fetch items the logged-in user has requested to borrow from others
+// Fetch items the logged-in user has requested to borrow from others REQUESTED BY (OUTGOING)
 router.get("/requested", isAuthenticated, async (req, res) => {
   try {
     const userId = req.tokenPayload.userId;
