@@ -89,7 +89,65 @@ router.get("/incomingrequest", isAuthenticated, async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 });
+// Update the status of a borrow request to "accepted"
+router.put("/:id/accept", isAuthenticated, async (req, res) => {
+  try {
+    const { id } = req.params;
 
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid ID" });
+    }
+
+    const borrowRequest = await BorrowRequest.findById(id);
+
+    if (!borrowRequest) {
+      return res.status(404).json({ message: "Borrow request not found" });
+    }
+
+    if (!borrowRequest.owner.equals(req.tokenPayload.userId)) {
+      return res.status(403).json({
+        message: "You are not authorized to accept this borrow request",
+      });
+    }
+
+    borrowRequest.status = "accepted";
+    await borrowRequest.save();
+
+    res.json(borrowRequest);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Update the status of a borrow request to "rejected"
+router.put("/:id/reject", isAuthenticated, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid ID" });
+    }
+
+    const borrowRequest = await BorrowRequest.findById(id);
+
+    if (!borrowRequest) {
+      return res.status(404).json({ message: "Borrow request not found" });
+    }
+
+    if (!borrowRequest.owner.equals(req.tokenPayload.userId)) {
+      return res.status(403).json({
+        message: "You are not authorized to reject this borrow request",
+      });
+    }
+
+    borrowRequest.status = "rejected";
+    await borrowRequest.save();
+
+    res.json(borrowRequest);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
 /* // Mark a specific borrow request as seen
 router.put("/mark-as-seen/:id", isAuthenticated, async (req, res) => {
   try {
