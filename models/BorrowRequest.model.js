@@ -28,8 +28,8 @@ const borrowRequestSchema = new Schema(
     },
     status: {
       type: String,
-      enum: ["pending", "accepted", "rejected", "completed"],
-      default: "pending",
+      enum: ["unseen", "seen", "accepted", "rejected", "completed"],
+      default: "unseen",
     },
   },
   {

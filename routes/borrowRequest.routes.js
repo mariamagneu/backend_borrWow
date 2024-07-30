@@ -49,6 +49,19 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/unseen-count/:ownerId", async (req, res) => {
+  try {
+    const { ownerId } = req.params;
+    const unseenCount = await BorrowRequest.countDocuments({
+      owner: ownerId,
+      status: "unseen",
+    });
+    res.json({ unseenCount });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Fetch items owned by the logged-in user and requested by others REQUESTED TO (INCOMING)
 router.get("/incomingrequest", isAuthenticated, async (req, res) => {
   try {
