@@ -90,6 +90,36 @@ router.get("/incomingrequest", isAuthenticated, async (req, res) => {
   }
 });
 
+/* // Mark a specific borrow request as seen
+router.put("/mark-as-seen/:id", isAuthenticated, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid ID" });
+    }
+
+    const borrowRequest = await BorrowRequest.findById(id);
+
+    if (!borrowRequest) {
+      return res.status(404).json({ message: "Borrow request not found" });
+    }
+
+    if (!borrowRequest.owner.equals(req.tokenPayload.userId)) {
+      return res.status(403).json({
+        message: "You are not authorized to update this borrow request",
+      });
+    }
+
+    borrowRequest.status = 'seen';
+    await borrowRequest.save();
+
+    res.json(borrowRequest);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+ */
 // Fetch items the logged-in user has requested to borrow from others REQUESTED BY (OUTGOING)
 router.get("/requested", isAuthenticated, async (req, res) => {
   try {
