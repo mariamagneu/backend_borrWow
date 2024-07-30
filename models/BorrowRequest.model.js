@@ -28,7 +28,14 @@ const borrowRequestSchema = new Schema(
     },
     status: {
       type: String,
-      enum: ["unseen", "seen", "accepted", "rejected", "completed"],
+      enum: [
+        "unseen",
+        "seen",
+        "accepted",
+        "rejected",
+        "picked-up",
+        "completed",
+      ],
       default: "unseen",
     },
   },
