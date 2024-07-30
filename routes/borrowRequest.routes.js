@@ -67,6 +67,19 @@ router.get("/incomingrequest", isAuthenticated, async (req, res) => {
   try {
     const userId = req.tokenPayload.userId;
 
+    // Find all unseen requests for the user
+    const unseenRequests = await BorrowRequest.find({
+      owner: userId,
+      status: "unseen",
+    });
+
+    // Update status of all unseen requests to seen
+    await BorrowRequest.updateMany(
+      { owner: userId, status: "unseen" },
+      { $set: { status: "seen" } }
+    );
+
+    // Find all requests for the user (both unseen and seen)
     const requests = await BorrowRequest.find({ owner: userId })
       .populate("item")
       .populate("borrower");
