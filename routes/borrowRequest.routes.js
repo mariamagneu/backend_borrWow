@@ -19,6 +19,10 @@ router.post("/", isAuthenticated, async (req, res) => {
     if (!item) {
       return res.status(404).json({ error: "Item not found" });
     }
+    // Check if the user is the owner of the item
+    if (item.owner.equals(userId)) {
+      return res.status(403).json({ error: "You cannot borrow your own item" });
+    }
 
     const borrowRequest = await BorrowRequest.create({
       item: itemId,
@@ -219,6 +223,36 @@ router.get("/:id", isAuthenticated, async (req, res) => {
       .populate("item");
 
     res.json(populatedBorrowRequest);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+// Accept a borrow request (authenticated and authorized)
+router.post("/:id/accept", isAuthenticated, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid ID" });
+    }
+
+    const borrowRequest = await BorrowRequest.findById(id);
+
+    if (!borrowRequest) {
+      return res.status(404).json({ message: "Borrow request not found" });
+    }
+
+    // Ensure the user is the owner of the item
+    if (!borrowRequest.owner.equals(req.tokenPayload.userId)) {
+      return res.status(403).json({
+        message: "You are not authorized to accept this borrow request",
+      });
+    }
+
+    borrowRequest.status = 'Accepted'; // Or whatever status you need to set
+    await borrowRequest.save();
+
+    res.json(borrowRequest);
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
